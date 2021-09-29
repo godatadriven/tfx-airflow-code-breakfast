@@ -1,0 +1,8 @@
+tensorflow-model-analysis==0.33.0
+tensorflow-data-validation==1.2.0
+tensorflow-metadata==1.2.0
+tensorflow-transform==1.2.0
+matplotlib
+papermill
+pandas
+networkx
