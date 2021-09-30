@@ -81,9 +81,12 @@ class TFXReadonlyMetadataStore(utils.ReadonlyMetadataStore):
         tfma_artifact = self.get_dest_artifact_of_type(
             model_id, TFXArtifactTypes.MODEL_EVAL
         )
+        print("tfma uri: ", tfma_artifact.uri)
         if tfma_artifact:
+            eval_result = tfma.load_eval_result(tfma_artifact.uri)
+            print("eval result: ", eval_result)
             return tfma.view.render_slicing_metrics(
-                tfma.load_eval_result(tfma_artifact.uri), slicing_column=slicing_column
+                eval_result, slicing_column=slicing_column
             )
 
     def compare_tfma_analysis(self, model_id, other_model_id):

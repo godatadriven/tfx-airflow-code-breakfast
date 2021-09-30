@@ -15,9 +15,14 @@ COPY ./requirements.txt ./opt
 RUN pip install -r /opt/requirements.txt
 
 RUN pip install jupyterlab
-RUN jupyter nbextension install --py --symlink --sys-prefix tensorflow_model_analysis && \
-    jupyter nbextension enable --py --sys-prefix tensorflow_model_analysis
 
+RUN apt-get install -y curl
+RUN curl -sL 'http://deb.nodesource.com/setup_16.x' | bash -s --
+
+RUN apt-get update -y && apt-get install -y nodejs
+
+RUN jupyter labextension install tensorflow_model_analysis && \
+    jupyter labextension enable tensorflow_model_analysis
 
 WORKDIR /home/tfx
 
