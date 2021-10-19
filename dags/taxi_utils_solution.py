@@ -329,7 +329,7 @@ def run_fn(fn_args: TrainerFnArgs):
     mirrored_strategy = tf.distribute.MirroredStrategy()
     with mirrored_strategy.scope():
         model = _build_keras_model(
-            # Construct layers sizes with exponetial decay
+            # Construct layers sizes with exponential decay
             hidden_units=[
                 max(2, int(first_dnn_layer_size * dnn_decay_factor ** i))
                 for i in range(num_dnn_layers)
