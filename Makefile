@@ -10,10 +10,14 @@ build: ## Build docker images
 	docker build --tag tfx-cb-airflow:0.0.1 services/airflow
 	docker build --tag tfx-cb-jupyter:0.0.1 services/jupyter
 
+.PHONY: push
+build: ## push images to GCP artefact registry
+	./push.sh
+
 .PHONY: up
 up: ## Bring Airflow up
 	rm -rf tfx
-	docker-compose up --build -d
+	docker-compose up -d
 
 .PHONY: down
 down: ## Bring Airflow down
