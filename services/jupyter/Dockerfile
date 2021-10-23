@@ -30,4 +30,10 @@ ENV JUPYTER_ENABLE_LAB yes
 
 EXPOSE 8888
 
-ENTRYPOINT jupyter lab  --ip 0.0.0.0 --no-browser --allow-root --LabApp.token=''
+ENTRYPOINT jupyter lab  \
+    --ip 0.0.0.0 \
+    --no-browser \
+    --allow-root \
+    --LabApp.token='' \
+    --ServerApp.base_url='/jupyterlab' \
+    --ServerApp.allow_origin='*'

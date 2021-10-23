@@ -11,7 +11,7 @@ build: ## Build docker images
 	docker build --tag tfx-cb-jupyter:0.0.1 services/jupyter
 
 .PHONY: push
-build: ## push images to GCP artefact registry
+push: ## push images to GCP artefact registry
 	./push.sh
 
 .PHONY: up

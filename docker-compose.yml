@@ -11,10 +11,27 @@ x-airflow-environment: &x_airflow_environment
   - AIRFLOW__CORE__STORE_SERIALIZED_DAGS=True
   - AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL=10
   - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=True
-  - AIRFLOW__WEBSERVER__RBAC=True
+  - AIRFLOW__WEBSERVER__RBAC=False
+  - AIRFLOW__WEBSERVER__AUTHENTICATE=False
+  - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080/airflow
+  - AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX=True
+  - AIRFLOW__WEBSERVER__PROXY_FIX_X_FOR=1
+  - AIRFLOW__WEBSERVER__PROXY_FIX_X_HOST=3
+
 # ====================================== /AIRFLOW ENVIRONMENT VARIABLES ======================================
 
 services:
+
+  nginx:
+    image: nginx
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - tfx-cb-network
+
   postgres:
     image: postgres:13-alpine
     environment:
@@ -23,6 +40,8 @@ services:
       - POSTGRES_DB=airflow
     ports:
       - "5432:5432"
+    networks:
+      - tfx-cb-network
 
   jupyterlab:
     image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-jupyter
@@ -38,6 +57,8 @@ services:
       - ./tfx:/opt/airflow/tfx # for consistent artefacts' lookup via MLMD
       - ./notebooks:/home/tfx/notebooks
       - logs:/opt/airflow/logs
+    networks:
+      - tfx-cb-network
 
   init:
     image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-airflow
@@ -48,9 +69,11 @@ services:
     # The webserver initializes permissions, so sleep for that to (approximately) be finished
     # No disaster if the webserver isn't finished by then, but create_user will start spitting out errors until the permissions exist
     command: -c 'airflow db upgrade && sleep 5 && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
+    networks:
+      - tfx-cb-network
 
   webserver:
-    image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-airflow
+    image:  tfx-cb-airflow:0.0.1
     restart: always
     depends_on:
       - postgres
@@ -60,6 +83,8 @@ services:
       - "8181:8080"
     environment: *x_airflow_environment
     command: webserver
+    networks:
+      - tfx-cb-network
 
   scheduler:
     image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-airflow
@@ -75,6 +100,11 @@ services:
     environment: *x_airflow_environment
     entrypoint: ["/bin/bash"]
     command: ["-c", "airflow scheduler"]
+    networks:
+      - tfx-cb-network
+
+networks:
+  tfx-cb-network:
 
 volumes:
   logs:
