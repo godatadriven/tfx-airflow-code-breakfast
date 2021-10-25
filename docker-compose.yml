@@ -34,8 +34,8 @@ services:
       - tfx-cb-network
 
   jupyterlab:
-    image: tfx-cb-jupyter:0.0.1
-#    image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-jupyter
+#    image: tfx-cb-jupyter:0.0.1
+    image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-jupyter
     # The webserver initializes permissions, so sleep for that to (approximately) be finished
     # No disaster if the webserver isn't finished by then, but create_user will start spitting out errors until the permissions exist
     ports:
