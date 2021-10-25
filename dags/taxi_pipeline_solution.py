@@ -135,7 +135,8 @@ def _create_pipeline(
     # perform quality validation of a candidate model (compared to a baseline).
     eval_config = tfma.EvalConfig(
         model_specs=[tfma.ModelSpec(label_key="tips")],
-        slicing_specs=[tfma.SlicingSpec()],
+        # slicing_specs=[tfma.SlicingSpec()],
+        slicing_specs=[tfma.SlicingSpec(feature_keys=["trip_start_day"])],
         metrics_specs=[
             tfma.MetricsSpec(
                 metrics=[

@@ -21,8 +21,22 @@ RUN curl -sL 'http://deb.nodesource.com/setup_16.x' | bash -s --
 
 RUN apt-get update -y && apt-get install -y nodejs
 
-RUN jupyter labextension install tensorflow_model_analysis && \
-    jupyter labextension enable tensorflow_model_analysis
+RUN jupyter labextension install tensorflow_model_analysis@0.33.0
+
+RUN pip install ipywidgets jupyterlab_widgets
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+
+RUN jupyter labextension install jupyter-matplotlib && \
+    jupyter labextension enable jupyter-matplotlib \
+
+RUN jupyter nbextension install tensorflow_model_analysis@0.33.0
+
+RUN pip install ipympl
+
+RUN jupyter nbextension enable --py widgetsnbextension
+RUN jupyter nbextension enable --py tensorflow_model_analysis
+
+RUN jupyter lab build
 
 WORKDIR /home/tfx
 

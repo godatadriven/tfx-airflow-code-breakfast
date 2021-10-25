@@ -16,10 +16,13 @@ push: ## push images to GCP artefact registry
 
 .PHONY: up
 up: ## Bring Airflow up
-	rm -rf tfx logs
-	mkdir logs
+	mkdir -p logs
 	docker-compose up -d
 
 .PHONY: down
 down: ## Bring Airflow down
 	docker-compose down -v
+
+.PHONY: clean
+clean: ## Bring Airflow down
+	rm -rf tfx logs
