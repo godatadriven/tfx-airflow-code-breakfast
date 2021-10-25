@@ -33,17 +33,6 @@ services:
     networks:
       - tfx-cb-network
 
-  postgres:
-    image: postgres:13-alpine
-    environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
-    ports:
-      - "5432:5432"
-    networks:
-      - tfx-cb-network
-
   jupyterlab:
     image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-jupyter
     # The webserver initializes permissions, so sleep for that to (approximately) be finished
@@ -54,27 +43,15 @@ services:
     volumes:
       - ./dags:/home/tfx/dags
       - ./data:/home/tfx/data
-      - ./tfx:/home/tfx/tfx    # for observing
-      - ./tfx:/opt/airflow/tfx # for consistent artefacts' lookup via MLMD
+      - ./tfx:/home/tfx/tfx       # for observing
+      - ./tfx:/opt/airflow/tfx    # for consistent artefacts' lookup via MLMD
       - ./notebooks:/home/tfx/notebooks
       - ./logs:/opt/airflow/logs
     networks:
       - tfx-cb-network
 
-  init:
-    image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-airflow
-    depends_on:
-      - postgres
-    environment: *x_airflow_environment
-    entrypoint: /bin/bash
-    # The webserver initializes permissions, so sleep for that to (approximately) be finished
-    # No disaster if the webserver isn't finished by then, but create_user will start spitting out errors until the permissions exist
-    command: -c 'airflow db upgrade && sleep 5 && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
-    networks:
-      - tfx-cb-network
-
   webserver:
-    image:  tfx-cb-airflow:0.0.1
+    image:  europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-airflow
     restart: always
     depends_on:
       - postgres
@@ -104,8 +81,28 @@ services:
     networks:
       - tfx-cb-network
 
+  init:
+    image: europe-west1-docker.pkg.dev/tfx-training-329508/tfx/tfx-cb-airflow
+    depends_on:
+      - postgres
+    environment: *x_airflow_environment
+    entrypoint: /bin/bash
+    # The webserver initializes permissions, so sleep for that to (approximately) be finished
+    # No disaster if the webserver isn't finished by then, but create_user will start spitting out errors until the permissions exist
+    command: -c 'airflow db upgrade && sleep 5 && airflow users create --username admin --password admin --firstname Anonymous --lastname Admin --role Admin --email admin@example.org'
+    networks:
+      - tfx-cb-network
+
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5432:5432"
+    networks:
+      - tfx-cb-network
+
 networks:
   tfx-cb-network:
-
-volumes:
-  logs:

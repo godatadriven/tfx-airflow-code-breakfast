@@ -36,7 +36,8 @@ make down
 ## Accessing application
 
 Access Web-UIs when docker-compose application is started 
-
+                                                        
+- Landing page [http://localhost](http://localhost:80)
 - Airflow [http://localhost:8081](http://localhost:8081), credentials: admin/admin 
 - JupyterLab [http://localhost:8888](http://localhost:8888) 
 
