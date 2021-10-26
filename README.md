@@ -11,7 +11,8 @@ Setup includes:
 
 ### Build Docker images
 
-Builds Airflow and JupyterLab images with TFX/TensorFlow libraries.
+Builds Airflow and JupyterLab images with TFX/TensorFlow libraries in you need to customize.  
+If you just want to start the application, build is not needed, by default images are pulled from GCR.
 
 ```
 make build
