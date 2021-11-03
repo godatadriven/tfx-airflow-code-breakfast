@@ -2,7 +2,7 @@
 # Create disk from snapshot
 
 disk=$1
-snapshot=tfx
+snapshot=tfx-1
 
 gcloud beta compute disks create $disk --project=spark-optimization \
   --type=pd-ssd --size=80GB --zone=europe-west1-b \
