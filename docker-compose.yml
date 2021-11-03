@@ -47,7 +47,7 @@ services:
       - ./tfx:/home/tfx/tfx       # for observing
       - ./tfx:/opt/airflow/tfx    # for consistent artefacts' lookup via MLMD
       - ./notebooks:/home/tfx/notebooks
-      - ./logs:/opt/airflow/logs:rw
+      - logs:/opt/airflow/logs:rw
     networks:
       - tfx-cb-network
 
@@ -57,7 +57,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./logs:/opt/airflow/logs:rw
+      - logs:/opt/airflow/logs:rw
     ports:
       - "8181:8080"
     environment: *x_airflow_environment
@@ -75,7 +75,7 @@ services:
       - ./dags:/opt/airflow/dags:rw
       - ./data:/opt/airflow/data:rw
       - ./tfx:/opt/airflow/tfx:rw
-      - ./logs:/opt/airflow/logs:rw
+      - logs:/opt/airflow/logs:rw
     environment: *x_airflow_environment
     entrypoint: ["/bin/bash"]
     command: ["-c", "airflow scheduler"]
@@ -107,3 +107,6 @@ services:
 
 networks:
   tfx-cb-network:
+
+volumes:
+  logs:
